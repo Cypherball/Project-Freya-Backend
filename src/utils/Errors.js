@@ -44,6 +44,10 @@ const throwSamePasswordUpdateError = () => {
    throw new UserInputError('New password is same as the old password');
 };
 
+const throwBadInputError = () => {
+   throw new UserInputError('There was some bad input');
+};
+
 const throwUserNotFoundError = () => {
    throw new ApolloError('No such user found!');
 };
@@ -61,6 +65,7 @@ module.exports = {
    throwForbiddenError,
    throwSameEmailUpdateError,
    throwSamePasswordUpdateError,
+   throwBadInputError,
    throwUserNotFoundError,
    throwUnknownError,
 };

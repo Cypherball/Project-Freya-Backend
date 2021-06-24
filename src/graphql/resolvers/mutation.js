@@ -1,5 +1,6 @@
 const { UserInputError } = require('apollo-server-express');
 const { User } = require('../../models/user');
+const { UserData } = require('../../models/userData');
 const {
    throwIncorrectCredentialsError,
    throwUnknownError,
@@ -8,6 +9,7 @@ const {
    throwSamePasswordUpdateError,
 } = require('../../utils/Errors');
 const { isAuthenticated, getUser } = require('../../utils/tools');
+var _ = require('lodash');
 
 module.exports = {
    signIn: async (parent, args, context, info) => {
@@ -79,5 +81,38 @@ module.exports = {
    },
    signOut: async (parent, args, context, info) => {
       return true;
+   },
+   updateUserProfile: async (parent, args, context, info) => {
+      try {
+         const user = await getUser(context.req);
+         let user_data = await UserData.findOne({ _id: user.user_data });
+         if (!user_data) {
+            user_data = new UserData({ user_id: user._id });
+         }
+         if (!user_data.loc) user_data.loc = {};
+         if (!user_data.socialMediaHandles) user_data.socialMediaHandles = {};
+
+         // Loop through the input fields and populate the user_data
+         _.forEach(args.fields, (v, k) => {
+            if (k === 'coordinates') {
+               user_data.loc.coordinates = v;
+            } else if (
+               k === 'instagram' ||
+               k === 'facebook' ||
+               k === 'twitter'
+            ) {
+               user_data.socialMediaHandles[k] = v;
+            } else {
+               user_data[k] = v;
+            }
+         });
+
+         await user_data.save();
+
+         return user;
+      } catch (err) {
+         console.log(err);
+         throw err;
+      }
    },
 };

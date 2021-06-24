@@ -35,127 +35,14 @@ const userSchema = new mongoose.Schema(
          type: String,
          required: false,
       },
-      gender: {
-         type: String,
-         required: false,
-         trim: true,
-         enum: [
-            'male',
-            'female',
-            'transmale',
-            'transfemale',
-            'transgender',
-            'bigender',
-            'agender',
-            'gender nonconforming',
-            'genderqueer',
-            'non-binary',
-            'intersex',
-         ],
+      profile_complete: {
+         type: Boolean,
+         default: false,
       },
-      interested_in: {
-         type: [
-            {
-               type: String,
-               trim: false,
-               enum: [
-                  'male',
-                  'female',
-                  'transmale',
-                  'transfemale',
-                  'transgender',
-                  'bigender',
-                  'agender',
-                  'gender nonconforming',
-                  'genderqueer',
-                  'non-binary',
-                  'intersex',
-               ],
-            },
-         ],
+      user_data: {
+         type: mongoose.Schema.Types.ObjectId,
+         ref: 'UserData',
          required: false,
-      },
-      dob: {
-         type: Date,
-         required: false,
-      },
-      interests: {
-         type: [
-            {
-               type: String,
-               trim: true,
-               lowercase: true,
-               maxLength: 50,
-               minLength: 3,
-            },
-         ],
-         required: false,
-      },
-      country_code: {
-         type: String,
-         required: false,
-         trim: true,
-         uppercase: true,
-         maxLength: 4,
-      },
-      phone: {
-         type: String,
-         required: false,
-         trim: true,
-         maxLength: 20,
-      },
-      country: {
-         type: String,
-         required: false,
-         trim: true,
-         lowercase: true,
-         maxLength: 150,
-      },
-      state: {
-         type: String,
-         required: false,
-         trim: true,
-         lowercase: true,
-         maxLength: 255,
-      },
-      addr: {
-         type: String,
-         required: false,
-         trim: true,
-         lowercase: true,
-         maxLength: 500,
-         alias: 'address',
-      },
-      loc: {
-         // user location of 2D point type
-         type: {
-            type: String,
-            enum: ['Point'],
-            default: 'Point',
-            required: true,
-         },
-         coordinates: {
-            type: [Number],
-            required: true,
-         },
-         required: false,
-      },
-      socialMediaHandles: {
-         instagram: {
-            type: String,
-            required: false,
-            maxLength: 255,
-         },
-         facebook: {
-            type: String,
-            required: false,
-            maxLength: 255,
-         },
-         twitter: {
-            type: String,
-            required: false,
-            maxLength: 255,
-         },
       },
       confirmation_code: String,
       confirmed: {

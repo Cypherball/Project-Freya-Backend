@@ -15,6 +15,7 @@ const resolvers = {
    Date: dateScalar,
    Query: require('./query'),
    Mutation: require('./mutation'),
+   User: require('./user'),
 };
 
 module.exports = resolvers;

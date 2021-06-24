@@ -3,17 +3,53 @@ const mongoose = require('mongoose');
 const userDataSchema = new mongoose.Schema(
    {
       user_id: {
-         type: User,
+         type: mongoose.Schema.Types.ObjectId,
+         ref: 'User',
+         required: true,
       },
       gender: {
          type: String,
-         required: true,
-         maxLength: 50,
+         required: false,
          trim: true,
+         enum: [
+            'male',
+            'female',
+            'transmale',
+            'transfemale',
+            'transgender',
+            'bigender',
+            'agender',
+            'gender nonconforming',
+            'genderqueer',
+            'non-binary',
+            'intersex',
+         ],
+      },
+      interested_in: {
+         type: [
+            {
+               type: String,
+               trim: false,
+               enum: [
+                  'male',
+                  'female',
+                  'transmale',
+                  'transfemale',
+                  'transgender',
+                  'bigender',
+                  'agender',
+                  'gender nonconforming',
+                  'genderqueer',
+                  'non-binary',
+                  'intersex',
+               ],
+            },
+         ],
+         required: false,
       },
       dob: {
          type: Date,
-         required: true,
+         required: false,
       },
       interests: {
          type: [
@@ -27,6 +63,26 @@ const userDataSchema = new mongoose.Schema(
          ],
          required: false,
       },
+      profile_pic: {
+         type: String,
+         required: false,
+         maxLength: 2000,
+      },
+      photos: [
+         {
+            url: {
+               type: String,
+               required: true,
+               maxLength: 2000,
+            },
+            desc: {
+               type: String,
+               required: false,
+               maxLength: 500,
+            },
+            required: false,
+         },
+      ],
       country_code: {
          type: String,
          required: false,
@@ -42,27 +98,37 @@ const userDataSchema = new mongoose.Schema(
       },
       country: {
          type: String,
-         required: true,
+         required: false,
          trim: true,
          lowercase: true,
          maxLength: 150,
       },
       state: {
          type: String,
-         required: true,
+         required: false,
          trim: true,
          lowercase: true,
          maxLength: 255,
       },
       address: {
          type: String,
-         required: true,
+         required: false,
          trim: true,
          lowercase: true,
          maxLength: 500,
       },
       loc: {
-         type: mongoose.Schema.Types.Point,
+         // user location of 2D point type
+         type: {
+            type: String,
+            enum: ['Point'],
+            default: 'Point',
+            required: true,
+         },
+         coordinates: {
+            type: [Number],
+            required: false,
+         },
          required: false,
       },
       socialMediaHandles: {
@@ -86,4 +152,6 @@ const userDataSchema = new mongoose.Schema(
    { timestamps: true }
 );
 
-module.exports = mongoose.model('UserData', userDataSchema);
+const UserData = mongoose.model('UserData', userDataSchema);
+
+module.exports = { UserData };
