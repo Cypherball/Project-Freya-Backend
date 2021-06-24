@@ -1,5 +1,7 @@
 # Project Freya
 
+![Freya: The Goddess of Love, Fertility and Beauty](https://avatars.mds.yandex.net/get-zen_doc/3403845/pub_5eca9de473c4400f3573801d_5ecbd8abac8c13619bda53f5/scale_1200)
+
 ## _Backend_
 
 This is the backend for a dating app project created in the MERN stack with GraphQL and Apollo.

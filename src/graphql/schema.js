@@ -10,7 +10,8 @@ const typeDefs = gql`
       signIn(fields: AuthInput!): User!
       signUp(fields: AuthInput!): User!
       signOut(fields: AuthInput!): Boolean!
-      signOutEverywhere(fields: AuthInput!): Boolean!
+      updateUserEmail(email: String!): User!
+      updateUserPassword(password: String!): Boolean!
    }
 
    scalar Date

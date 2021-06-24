@@ -193,11 +193,36 @@ userSchema.methods.generateToken = async function () {
       { _id: user._id, email: user.email },
       process.env.JWT_SECRET,
       {
-         expiresIn: '7d',
+         expiresIn: '30d',
       }
    );
    user.token = token;
    return user.save();
+};
+
+userSchema.methods.updateEmail = async function (email) {
+   console.log(email);
+   const user = this;
+   user.email = email;
+   // regenerate jwt with new email
+   let token = jwt.sign(
+      { _id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      {
+         expiresIn: '30d',
+      }
+   );
+   user.token = token;
+   return user.save();
+};
+
+userSchema.methods.updatePassword = async function (password) {
+   const user = this;
+   user.password = password;
+   // invalidate jwt
+   user.token = null;
+   await user.save();
+   return true;
 };
 
 userSchema.methods.comparePassword = function (password) {
