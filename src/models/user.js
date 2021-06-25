@@ -84,11 +84,11 @@ userSchema.methods.generateToken = async function () {
       }
    );
    user.token = token;
-   return user.save();
+   user = await user.save();
+   return [user, token];
 };
 
 userSchema.methods.updateEmail = async function (email) {
-   console.log(email);
    const user = this;
    user.email = email;
    // regenerate jwt with new email

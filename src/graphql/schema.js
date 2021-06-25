@@ -5,6 +5,7 @@ const typeDefs = gql`
       me: User!
       # _Limited is being used here since any authenticated user can query other users to see their data
       user(user_id: ID!): User_Limited!
+      userData(user_id: ID!): UserData_Limited!
    }
 
    type Mutation {
@@ -25,7 +26,7 @@ const typeDefs = gql`
       email: String!
       # Omitting password field to improve security. Pass is hashed and would be a useless query anyway
       name: String
-      token: String
+      token: String # Would result in null everytime except for signin and signup
       device_id: String
       profile_complete: Boolean
       user_data: UserData
@@ -34,18 +35,17 @@ const typeDefs = gql`
       banned: Boolean
    }
 
-   # _Limited is used for limiting the data being sent by the server to hide sensitive information
+   # _Limited is used for limiting the data being sent by the server to hide sensitive information. [Will have the same resolvers]
    type User_Limited {
       _id: ID!
       email: String!
       name: String
       user_data: UserData_Limited
-      banned: Boolean
    }
 
    type UserData {
       _id: ID!
-      user_id: ID
+      user: User
       gender: String
       interested_in: [String]
       dob: Date
@@ -63,7 +63,7 @@ const typeDefs = gql`
 
    type UserData_Limited {
       _id: ID!
-      user_id: ID
+      user: User_Limited
       gender: String
       interested_in: [String]
       dob: Date

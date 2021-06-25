@@ -13,7 +13,7 @@ const server = new ApolloServer({
    context: ({ req }) => {
       // TODO: READ ACTUAL HEADERS
       req.headers.authorization =
-         'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGQ0ZWJjMzE0OTljNjI1MGMzYmU4YjQiLCJlbWFpbCI6Im5pdGlzaEBob3RtYWlsLmNvbSIsImlhdCI6MTYyNDU2OTUyMiwiZXhwIjoxNjI3MTYxNTIyfQ.dDV5GRD6jmRsSu4oIlG1beM1BfDaIdq8mLc68gMRsJQ';
+         'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGQ1N2YxYWQxZTU1MjU0NzRhYzI5NWMiLCJlbWFpbCI6Im5pdGlzaEBob3RtYWlsLmNvbSIsImlhdCI6MTYyNDYxNTg1NiwiZXhwIjoxNjI3MjA3ODU2fQ.cVptxUnTU5uPijNtRwvy1iqVNd93M-r3E9AL-W1y9l0';
       return { req };
    },
 });

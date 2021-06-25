@@ -1,4 +1,8 @@
 const { GraphQLScalarType } = require('graphql');
+const Query = require('./query');
+const Mutation = require('./mutation');
+const User = require('./user');
+const UserData = require('./userData');
 
 // Resolve the custom Date type Scalar
 const dateScalar = new GraphQLScalarType({
@@ -13,9 +17,15 @@ const dateScalar = new GraphQLScalarType({
 
 const resolvers = {
    Date: dateScalar,
-   Query: require('./query'),
-   Mutation: require('./mutation'),
-   User: require('./user'),
+
+   Query,
+   Mutation,
+
+   User,
+   User_Limited: User,
+
+   UserData,
+   UserData_Limited: UserData,
 };
 
 module.exports = resolvers;

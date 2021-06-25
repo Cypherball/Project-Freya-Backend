@@ -4,10 +4,11 @@ const {
    throwExpiredTokenError,
    throwForbiddenError,
    throwUserNotFoundError,
+   throwUserBannedError,
 } = require('./Errors');
 
 // return user if valid jwt is provided
-const getUser = async (request) => {
+const getUser = async (request, ignoreBan = false) => {
    try {
       // check validity of jwt and get decoded values
       const req = getAuthentication(request);
@@ -18,6 +19,7 @@ const getUser = async (request) => {
       else if (req.email !== user.email) throwForbiddenError();
       // check if jwt matches last stored jwt in db
       else if (req.token !== user.token) throwExpiredTokenError();
+      if (!ignoreBan && user.banned) throwUserBannedError();
       return user;
    } catch (err) {
       throw err;
@@ -32,6 +34,7 @@ const isAuthenticated = async (request) => {
       // check if user actually exists
       const user = await User.findOne({ _id: req._id });
       if (!user || req.email !== user.email) return false;
+      if (user.banned) return false;
       if (req.token !== user.token) return false;
       return true;
    } catch (err) {

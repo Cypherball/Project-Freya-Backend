@@ -3,6 +3,7 @@ const {
    UserInputError,
    ApolloError,
 } = require('apollo-server-express');
+const { some } = require('lodash');
 
 const throwIncorrectCredentialsError = () => {
    throw new AuthenticationError('Email/Password is incorrect');
@@ -36,6 +37,10 @@ const throwForbiddenError = () => {
    );
 };
 
+const throwUserBannedError = () => {
+   throw new AuthenticationError("I don't think so, you are banned.");
+};
+
 const throwSameEmailUpdateError = () => {
    throw new UserInputError('Dude, you provided the same email to be updated.');
 };
@@ -52,6 +57,10 @@ const throwUserNotFoundError = () => {
    throw new ApolloError('No such user found!');
 };
 
+const throwUserDataNotFoundError = () => {
+   throw new ApolloError('User Data does not exist for the user');
+};
+
 const throwUnknownError = () => {
    throw new ApolloError('Something went wrong. Try again.');
 };
@@ -63,9 +72,11 @@ module.exports = {
    throwExpiredTokenError,
    throwNoAuthError,
    throwForbiddenError,
+   throwUserBannedError,
    throwSameEmailUpdateError,
    throwSamePasswordUpdateError,
    throwBadInputError,
    throwUserNotFoundError,
+   throwUserDataNotFoundError,
    throwUnknownError,
 };
