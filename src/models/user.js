@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const {
+   verificationText,
+   verification_EmailUpdateText,
+   sendMail,
+} = require('../utils/mailer');
 require('dotenv').config();
 const SALT_I = 10;
 
@@ -22,7 +27,7 @@ const userSchema = new mongoose.Schema(
       },
       name: {
          type: String,
-         required: false,
+         required: true,
          maxLength: 255,
          minLength: 3,
          trim: true,
@@ -44,7 +49,16 @@ const userSchema = new mongoose.Schema(
          ref: 'UserData',
          required: false,
       },
-      confirmation_code: String,
+      password_reset_code: {
+         type: Number,
+         min: 99999,
+         max: 1000000,
+      },
+      confirmation_code: {
+         type: Number,
+         min: 99999,
+         max: 1000000,
+      },
       confirmed: {
          type: Boolean,
          default: false,
@@ -74,7 +88,9 @@ userSchema.pre('save', function (next) {
    } else next();
 });
 
-userSchema.methods.generateToken = async function () {
+userSchema.methods.generateToken = async function (
+   sendVerificationEmail = false
+) {
    let user = this;
    let token = jwt.sign(
       { _id: user._id, email: user.email },
@@ -84,23 +100,82 @@ userSchema.methods.generateToken = async function () {
       }
    );
    user.token = token;
-   user = await user.save();
+
+   // send verification email or just save user with the new generated token
+   if (sendVerificationEmail) user = await user.sendVerificationEmail();
+   else user = await user.save();
+
    return [user, token];
 };
 
+userSchema.methods.sendVerificationEmail = async function () {
+   let user = this;
+   if (user.confirmed) return user.save();
+   // Generate 6 digit random number
+   const code = Math.floor(100000 + Math.random() * 900000);
+   // Generate JWT with userid and the unique code which expires in 48hrs
+   let token = jwt.sign({ _id: user._id, code }, process.env.JWT_SECRET_MAIL, {
+      expiresIn: '2d',
+   });
+   // Store code in db
+   user.confirmation_code = code;
+   user = await user.save();
+
+   // Send token in email as a verification link to user
+   const verification_url = `http://localhost:5000/users/verify?token=${token}`;
+   const email_text = verificationText(user.name, verification_url);
+   try {
+      sendMail(user.email, `Verify your InfatuNation account`, email_text);
+   } catch (err) {
+      console.log(err);
+   }
+
+   return user;
+};
+
 userSchema.methods.updateEmail = async function (email) {
-   const user = this;
+   let user = this;
    user.email = email;
+   user.confirmed = false;
    // regenerate jwt with new email
-   let token = jwt.sign(
+   let login_token = jwt.sign(
       { _id: user._id, email: user.email },
       process.env.JWT_SECRET,
       {
          expiresIn: '30d',
       }
    );
-   user.token = token;
-   return user.save();
+   user.token = login_token;
+
+   // Send New Email Verification Mail
+   // Generate 6 digit random number
+   const code = Math.floor(100000 + Math.random() * 900000);
+   // Generate JWT with userid and the unique code which expires in 48hrs
+   let token = jwt.sign({ _id: user._id, code }, process.env.JWT_SECRET_MAIL, {
+      expiresIn: '2d',
+   });
+   // Store code in db
+   user.confirmation_code = code;
+   user = await user.save();
+
+   // Send token in email as a verification link to user
+   const verification_url = `http://localhost:5000/users/verify?token=${token}`;
+   const email_text = verification_EmailUpdateText(
+      user.name,
+      user.email,
+      verification_url
+   );
+   try {
+      sendMail(
+         user.email,
+         `Verify your updated InfatuNation email`,
+         email_text
+      );
+   } catch (err) {
+      console.log(err);
+   }
+
+   return user;
 };
 
 userSchema.methods.updatePassword = async function (password) {

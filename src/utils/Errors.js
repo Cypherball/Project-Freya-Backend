@@ -41,6 +41,16 @@ const throwUserBannedError = () => {
    throw new AuthenticationError("I don't think so, you are banned.");
 };
 
+const throwInvalidVerificationError = () => {
+   throw new AuthenticationError(
+      'Your verification token is either incorrect or has expired.'
+   );
+};
+
+const throwAlreadyVerifiedError = () => {
+   throw new AuthenticationError('Your account has already been verified.');
+};
+
 const throwSameEmailUpdateError = () => {
    throw new UserInputError('Dude, you provided the same email to be updated.');
 };
@@ -73,6 +83,8 @@ module.exports = {
    throwNoAuthError,
    throwForbiddenError,
    throwUserBannedError,
+   throwInvalidVerificationError,
+   throwAlreadyVerifiedError,
    throwSameEmailUpdateError,
    throwSamePasswordUpdateError,
    throwBadInputError,

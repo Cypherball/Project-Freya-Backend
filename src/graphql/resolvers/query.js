@@ -1,10 +1,11 @@
 const { User } = require('../../models/user');
 const { getUser, isAuthenticated } = require('../../utils/tools');
 const {
-   throwExpiredTokenError,
    throwForbiddenError,
    throwUserNotFoundError,
    throwUserDataNotFoundError,
+   throwAlreadyVerifiedError,
+   throwUnknownError,
 } = require('../../utils/Errors');
 const { UserData } = require('../../models/userData');
 
@@ -38,6 +39,16 @@ module.exports = {
          } else {
             throwForbiddenError();
          }
+      } catch (err) {
+         throw err;
+      }
+   },
+   requestVerificationLink: async (parent, args, context, info) => {
+      try {
+         const user = await getUser(context.req);
+         if (user.confirmed) return throwAlreadyVerifiedError();
+         user.sendVerificationEmail();
+         return true;
       } catch (err) {
          throw err;
       }

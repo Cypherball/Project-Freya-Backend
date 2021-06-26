@@ -6,13 +6,14 @@ const typeDefs = gql`
       # _Limited is being used here since any authenticated user can query other users to see their data
       user(user_id: ID!): User_Limited!
       userData(user_id: ID!): UserData_Limited!
+      requestVerificationLink: Boolean!
    }
 
    type Mutation {
       # Auth
-      signIn(fields: AuthInput!): User!
-      signUp(fields: AuthInput!): User!
-      signOut(fields: AuthInput!): Boolean!
+      signIn(fields: SigninInput!): User!
+      signUp(fields: SignupInput!): User!
+      signOut: Boolean!
       # User Updates
       updateUserEmail(email: String!): User!
       updateUserPassword(password: String!): Boolean!
@@ -25,12 +26,13 @@ const typeDefs = gql`
       _id: ID!
       email: String!
       # Omitting password field to improve security. Pass is hashed and would be a useless query anyway
-      name: String
+      name: String!
       token: String # Would result in null everytime except for signin and signup
       device_id: String
       profile_complete: Boolean
       user_data: UserData
-      confirmation_code: String
+      confirmation_code: Int
+      password_reset_code: Int
       confirmed: Boolean
       banned: Boolean
    }
@@ -93,7 +95,13 @@ const typeDefs = gql`
 
    # Inputs
 
-   input AuthInput {
+   input SignupInput {
+      email: String!
+      password: String!
+      name: String!
+   }
+
+   input SigninInput {
       email: String!
       password: String!
    }

@@ -45,10 +45,11 @@ module.exports = {
          const user = new User({
             email: args.fields.email,
             password: args.fields.password,
+            name: args.fields.name,
          });
 
          // Generate token and get user
-         const [res, token] = await user.generateToken();
+         const [res, token] = await user.generateToken(true);
          if (!res) throwUnknownError();
 
          console.log(
