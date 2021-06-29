@@ -48,6 +48,7 @@ const typeDefs = gql`
    type UserData {
       _id: ID!
       user: User
+      bio: String
       gender: String
       interested_in: [String]
       dob: Date
@@ -66,6 +67,7 @@ const typeDefs = gql`
    type UserData_Limited {
       _id: ID!
       user: User_Limited
+      bio: String
       gender: String
       interested_in: [String]
       dob: Date

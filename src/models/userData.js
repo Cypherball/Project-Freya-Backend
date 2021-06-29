@@ -7,6 +7,12 @@ const userDataSchema = new mongoose.Schema(
          ref: 'User',
          required: true,
       },
+      bio: {
+         type: String,
+         required: false,
+         trim: true,
+         maxLength: 512,
+      },
       gender: {
          type: String,
          required: false,

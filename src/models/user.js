@@ -19,11 +19,14 @@ const userSchema = new mongoose.Schema(
          trim: true,
          lowercase: true,
          validate: [validator.isEmail, 'Invalid Email'],
+         maxLength: 255,
+         minLength: 6,
       },
       password: {
          type: String,
          required: true,
          minLength: 6,
+         maxLength: 255,
       },
       name: {
          type: String,
@@ -122,7 +125,7 @@ userSchema.methods.sendVerificationEmail = async function () {
    user = await user.save();
 
    // Send token in email as a verification link to user
-   const verification_url = `http://localhost:5000/users/verify?token=${token}`;
+   const verification_url = `https://www.infatunation.tech/users/verify?token=${token}`;
    const email_text = verificationText(user.name, verification_url);
    try {
       sendMail(user.email, `Verify your InfatuNation account`, email_text);
@@ -159,7 +162,7 @@ userSchema.methods.updateEmail = async function (email) {
    user = await user.save();
 
    // Send token in email as a verification link to user
-   const verification_url = `http://localhost:5000/users/verify?token=${token}`;
+   const verification_url = `https://www.infatunation.tech/users/verify?token=${token}`;
    const email_text = verification_EmailUpdateText(
       user.name,
       user.email,
