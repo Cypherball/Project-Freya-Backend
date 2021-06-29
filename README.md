@@ -4,7 +4,7 @@
 
 ## _Backend_
 
-This is the backend for a dating app project created in the MERN stack with GraphQL and Apollo.
+This is the backend for a dating app _(InfatuNation)_ project created in the MERN stack with GraphQL and Apollo.
 
 To get started:
 

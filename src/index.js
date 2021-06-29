@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 
@@ -13,9 +14,12 @@ const server = new ApolloServer({
    typeDefs,
    resolvers,
    context: ({ req, res }) => {
-      // TODO: READ ACTUAL HEADERS
-      req.headers.authorization =
-         'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGQ1N2YxYWQxZTU1MjU0NzRhYzI5NWMiLCJlbWFpbCI6Im5pdGlzaGRldmFkaWdhQGhvdG1haWwuY29tIiwiaWF0IjoxNjI0NzE5Mzk2LCJleHAiOjE2MjczMTEzOTZ9.xpfNwd-8M7wO2J2fsVOcLTxsyvRJcXcQSV5JOs9GZ2o';
+      if (process.env.NODE_ENV === 'development') {
+         if (!req.headers.authorization) {
+            req.headers.authorization =
+               'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGQ1N2YxYWQxZTU1MjU0NzRhYzI5NWMiLCJlbWFpbCI6Im5pdGlzaGRldmFkaWdhQGhvdG1haWwuY29tIiwiaWF0IjoxNjI0NzE5Mzk2LCJleHAiOjE2MjczMTEzOTZ9.xpfNwd-8M7wO2J2fsVOcLTxsyvRJcXcQSV5JOs9GZ2o';
+         }
+      }
       return { req, res };
    },
 });
